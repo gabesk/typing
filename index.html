@@ -1,0 +1,974 @@
+<title>Home Row Heroes</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Lexend:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  /* Layout: one centered play column (max 980px). Every object is a sticker: ink outline + hard drop shadow on a dotted sky field. Finger colors carry meaning everywhere. Deliberately single-theme (bright classroom look). */
+  --sky:#d4edfc; --sky-dot:#bde0f7; --paper:#ffffff; --ink:#1c2246; --ink-soft:#56608c;
+  --sun:#ffd23f; --hot:#ff4f7b; --good:#22a865; --bad:#ff4a4a;
+  --water-top:#5cc8e6; --water-deep:#1e6aa3;
+  --f-pinky:#b48cf2; --f-ring:#56a9ff; --f-middle:#3fcf86; --f-pointer:#ffab2e; --f-thumb:#ff86b6;
+  --display:"Baloo 2","Trebuchet MS",system-ui,sans-serif;
+  --body:"Lexend","Segoe UI",system-ui,sans-serif;
+  color-scheme:light;
+}
+html,body{height:100%}
+body{
+  background:var(--sky) radial-gradient(circle,var(--sky-dot) 2px,transparent 2.6px) 0 0/26px 26px;
+  color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.45;
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+}
+.app{max-width:980px;margin-inline:auto;padding-block:14px 32px;display:flex;flex-direction:column;gap:18px;min-height:100%}
+h1,h2,h3{font-family:var(--display);line-height:1.05;margin:0;text-wrap:balance}
+p{margin:0}
+.muted{color:var(--ink-soft)}
+.eyebrow{font:700 12px/1 var(--body);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
+:focus-visible{outline:3px solid var(--hot);outline-offset:3px}
+
+/* header */
+.bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand h1{font-size:clamp(26px,4vw,34px);font-weight:800}
+.logo{display:flex;gap:4px}
+.logo span{position:relative;display:grid;place-items:center;width:34px;height:34px;border:3px solid var(--ink);border-radius:9px;background:var(--f-pointer);box-shadow:0 3px 0 var(--ink);font:700 17px/1 var(--body)}
+.logo span::after{content:"";position:absolute;bottom:4px;left:50%;width:10px;height:3px;border-radius:2px;background:var(--ink);transform:translateX(-50%)}
+.bar-right{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.star-count{display:flex;align-items:center;gap:6px;font:800 20px/1 var(--display);font-variant-numeric:tabular-nums;padding:6px 12px 4px;background:var(--paper);border:3px solid var(--ink);border-radius:99px}
+.star-count svg{width:20px;height:20px;fill:var(--sun);stroke:var(--ink);stroke-width:1.8;margin-top:-2px}
+.toggle{font:600 14px/1 var(--body);color:var(--ink);padding:9px 12px;border:3px solid var(--ink);border-radius:99px;background:var(--paper);cursor:pointer}
+.toggle[aria-pressed="true"]{background:var(--ink);color:var(--sun)}
+.touch-note{display:none;background:var(--ink);color:var(--sun);border-radius:14px;padding:10px 14px;font-weight:600}
+@media (hover:none) and (pointer:coarse){.touch-note{display:block}}
+
+/* shared objects */
+.card{background:var(--paper);border:3px solid var(--ink);border-radius:22px;box-shadow:0 6px 0 var(--ink);padding:20px}
+.btn{font:700 18px/1 var(--display);padding:12px 20px 9px;border:3px solid var(--ink);border-radius:14px;background:var(--paper);color:var(--ink);box-shadow:0 4px 0 var(--ink);cursor:pointer;transition:transform .08s,box-shadow .08s}
+.btn:hover{transform:translateY(-1px);box-shadow:0 5px 0 var(--ink)}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.btn.primary{background:var(--sun)}
+.btn.water{background:var(--water-top)}
+.btn.small{font-size:15px;padding:8px 12px 6px}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:0 4px 0 var(--ink)}
+.btn-row{display:flex;flex-wrap:wrap;gap:10px}
+.link{background:none;border:0;padding:0;font:inherit;color:var(--ink);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.cap{display:inline-grid;place-items:center;min-width:30px;height:30px;padding:0 6px;border:2px solid var(--ink);border-radius:8px;background:color-mix(in srgb,var(--fc,var(--paper)) 45%,var(--paper));box-shadow:0 2px 0 var(--ink);font:700 15px/1 var(--body);vertical-align:middle}
+.caps{display:flex;flex-wrap:wrap;gap:6px}
+.screen{display:flex;flex-direction:column;gap:18px}
+
+/* menu */
+.menu-top{display:grid;grid-template-columns:1.25fr 1fr;gap:18px}
+.mission{display:flex;flex-direction:column;gap:12px;align-items:flex-start}
+.mission h2{font-size:clamp(28px,4vw,38px)}
+.mission p.muted{max-width:46ch}
+.bubble-card{position:relative;overflow:hidden;display:flex;flex-direction:column;gap:12px;background:linear-gradient(170deg,var(--paper) 55%,color-mix(in srgb,var(--water-top) 35%,var(--paper)))}
+.bubble-card h2{font-size:32px}
+.bubble-card .deco{position:absolute;right:-6px;top:-6px;width:110px;height:110px;pointer-events:none}
+.bubble-card .deco i{position:absolute;border-radius:50%;border:3px solid var(--ink);background:color-mix(in srgb,var(--water-top) 30%,var(--paper))}
+.bubble-card > *:not(.deco){position:relative}
+.tiny{font-size:13px;color:var(--ink-soft)}
+.group{display:flex;flex-direction:column;gap:12px}
+.group-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px}
+.group-head h3{font-size:24px}
+.lessons{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:14px}
+.lesson{display:flex;flex-direction:column;gap:8px;text-align:left;background:var(--paper);color:var(--ink);font-family:var(--body);border:3px solid var(--ink);border-radius:18px;box-shadow:0 5px 0 var(--ink);padding:14px;cursor:pointer;transition:transform .08s,box-shadow .08s}
+.lesson:hover{transform:translateY(-2px);box-shadow:0 7px 0 var(--ink)}
+.lesson:active{transform:translateY(3px);box-shadow:0 2px 0 var(--ink)}
+.lesson .num{font:700 12px/1 var(--body);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
+.lesson .name{font:700 20px/1.1 var(--display)}
+.lesson.next{background:color-mix(in srgb,var(--sun) 40%,var(--paper))}
+.lesson.locked{background:transparent;box-shadow:none;border-style:dashed;cursor:not-allowed;transform:none;opacity:.7}
+.lesson.locked .caps{filter:grayscale(1)}
+.ministars{display:flex;gap:3px;margin-top:auto}
+.ministars svg{width:20px;height:20px}
+.star{fill:var(--paper);stroke:var(--ink);stroke-width:1.8;stroke-linejoin:round}
+.star.on{fill:var(--sun)}
+.lock{font-size:13px;font-weight:600;color:var(--ink-soft);margin-top:auto}
+.grownups{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:14px;color:var(--ink-soft);padding-top:6px}
+
+/* ready */
+.head-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.head-row h2{font-size:clamp(26px,4vw,34px)}
+.ready-body{display:grid;grid-template-columns:1.2fr 1fr;gap:18px;align-items:start}
+.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;counter-reset:s}
+.steps li{counter-increment:s;display:flex;gap:12px;align-items:center;font-size:17px}
+.steps li::before{content:counter(s);flex:none;display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:var(--ink);color:var(--sun);font:800 17px/1 var(--display)}
+.steps li.go{font-weight:700}
+.steps li.go::before{background:var(--hot);color:var(--paper)}
+.tipcard{display:flex;flex-direction:column;gap:10px}
+.tipcard p{font-size:17px}
+.press{align-self:center;display:flex;align-items:center;gap:10px;font:700 20px/1 var(--display);background:var(--ink);color:var(--sun);padding:12px 20px 9px;border-radius:99px;animation:breathe 1.6s ease-in-out infinite}
+.press .cap{color:var(--ink)}
+
+/* keyboard */
+.kbd-wrap{container-type:inline-size;width:100%;max-width:780px;margin-inline:auto}
+.kbd{--g:6px;--u:calc((100cqw - 30px - 10 * var(--g)) / 11);background:var(--paper);border:3px solid var(--ink);border-radius:20px;box-shadow:0 6px 0 var(--ink);padding:12px;display:flex;flex-direction:column;gap:var(--g)}
+.krow{display:flex;gap:var(--g)}
+.krow.r1{padding-left:calc(var(--u) * .3)}
+.krow.r2{padding-left:calc(var(--u) * .8)}
+.krow.r3{padding-left:calc(var(--u) * 2.55)}
+.key{position:relative;flex:none;width:var(--u);height:calc(var(--u) * .9);display:grid;place-items:center;border:2px solid var(--ink);border-radius:calc(var(--u) * .18);background:color-mix(in srgb,var(--fc) 36%,var(--paper));box-shadow:0 3px 0 var(--ink);font:600 calc(var(--u) * .36)/1 var(--body);transition:transform .08s,box-shadow .08s,background .15s}
+.key.space{width:calc(var(--u) * 5 + 4 * var(--g));font-size:calc(var(--u) * .24)}
+.key.dim{background:var(--paper);color:var(--ink-soft);opacity:.5}
+.key.bump::after{content:"";position:absolute;bottom:16%;left:50%;width:30%;height:3px;border-radius:2px;background:var(--ink);transform:translateX(-50%)}
+.key.target{background:var(--fc);z-index:1;box-shadow:0 3px 0 var(--ink),0 0 0 3px var(--paper),0 0 0 6px var(--ink);animation:bob .9s ease-in-out infinite}
+.key.hit{transform:translateY(3px);box-shadow:0 0 0 var(--ink);animation:none}
+.key.miss{background:var(--bad);animation:shake .3s}
+.no-peek .key span{visibility:hidden}
+
+/* hands */
+.hands{display:block;width:100%;max-width:420px;margin-inline:auto;overflow:visible}
+.palm{fill:var(--paper);stroke:var(--ink);stroke-width:3}
+.digit{transition:transform .18s ease-out,opacity .18s}
+.digit rect{stroke:var(--ink);stroke-width:3}
+.digit text{font:700 15px var(--body);fill:var(--ink);text-anchor:middle;dominant-baseline:middle}
+.digit.on{transform:translateY(-12px)}
+.hands.focus .digit:not(.on){opacity:.3}
+
+/* lesson */
+.play-top{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.play-title{flex:1;min-width:180px;display:flex;flex-direction:column;gap:6px}
+.play-title h2{font-size:24px}
+.progress{height:16px;border:3px solid var(--ink);border-radius:99px;background:var(--paper);overflow:hidden}
+.progress i{display:block;height:100%;width:0;background:var(--good);transition:width .2s}
+.live{display:flex;gap:8px}
+.pill{font:600 14px/1 var(--body);font-variant-numeric:tabular-nums;padding:8px 12px;background:var(--paper);border:3px solid var(--ink);border-radius:99px;white-space:nowrap}
+.pill b{font-weight:700}
+.strip{position:relative;overflow:hidden;background:var(--paper);border:3px solid var(--ink);border-radius:22px;box-shadow:0 6px 0 var(--ink);padding-block:24px 28px}
+.strip::before,.strip::after{content:"";position:absolute;top:0;bottom:0;width:60px;z-index:1;pointer-events:none}
+.strip::before{left:0;background:linear-gradient(90deg,var(--paper),transparent)}
+.strip::after{right:0;background:linear-gradient(-90deg,var(--paper),transparent)}
+.track{display:flex;white-space:pre;font:500 clamp(34px,6.5vw,58px)/1.25 var(--body);transition:transform .16s ease-out;will-change:transform}
+.ch{position:relative;padding:0 .05em;border-radius:10px}
+.ch.sp{min-width:.5em}
+.ch.done{color:var(--ink-soft);opacity:.4}
+.ch.done.missed{opacity:.7}
+.ch.missed::after{content:"";position:absolute;left:50%;bottom:-8px;width:9px;height:9px;border-radius:50%;background:var(--bad);transform:translateX(-50%)}
+.ch.cur{background:var(--sun);box-shadow:inset 0 -6px 0 var(--ink)}
+.ch.cur.wrong{animation:shake .3s}
+.hint{text-align:center;font-size:18px;font-weight:500;min-height:1.6em}
+.chip{display:inline-block;padding:1px 12px;border:2px solid var(--ink);border-radius:99px;background:var(--fc);font-weight:700}
+.banner{align-self:center;background:var(--ink);color:var(--sun);font-weight:600;padding:10px 18px;border-radius:14px;text-align:center;animation:pop-in .25s}
+
+/* results */
+.results{max-width:600px;width:100%;margin-inline:auto;display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center}
+.bigstars{display:flex;gap:10px;align-items:flex-end}
+.bigstars svg{width:76px;height:76px}
+.bigstars svg:nth-child(2){width:96px;height:96px}
+.bigstars .star.on{animation:star-in .5s cubic-bezier(.3,1.6,.6,1) backwards}
+.results h2{font-size:clamp(30px,5vw,42px)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%}
+.stat{display:flex;flex-direction:column;gap:6px;padding:12px 6px;border:3px solid var(--ink);border-radius:16px;background:color-mix(in srgb,var(--sky) 50%,var(--paper))}
+.stat b{font:800 34px/1 var(--display);font-variant-numeric:tabular-nums}
+.stat span{font:700 11px/1.2 var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)}
+.practice{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px}
+.unlocked{font:800 20px/1 var(--display);color:var(--good)}
+
+/* bubble pop */
+.hud{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.hud .spacer{flex:1}
+.hearts{display:flex;gap:4px}
+.hearts svg{width:28px;height:28px;stroke:var(--ink);stroke-width:2;fill:var(--hot);transition:transform .2s}
+.hearts svg.lost{fill:var(--paper);transform:scale(.8)}
+.pond{position:relative;overflow:hidden;height:clamp(280px,46vh,440px);border:3px solid var(--ink);border-radius:22px;box-shadow:0 6px 0 var(--ink);background:linear-gradient(var(--water-top),var(--water-deep))}
+.pond.shake{animation:shake .3s}
+.pond::after{content:"";position:absolute;left:0;right:0;top:0;height:10px;background:repeating-linear-gradient(90deg,var(--paper) 0 18px,transparent 18px 30px);opacity:.5}
+.bubble{position:absolute;left:0;bottom:-72px;width:66px;height:66px;border-radius:50%;display:grid;place-items:center;font:700 30px/1 var(--body);color:var(--ink);border:5px solid var(--fc);box-shadow:0 0 0 2px var(--ink);background:radial-gradient(circle at 30% 26%,var(--paper) 0 9%,color-mix(in srgb,var(--paper) 88%,transparent) 11% 58%,color-mix(in srgb,var(--paper) 62%,transparent) 100%);transform:var(--t);will-change:transform}
+.bubble.near{box-shadow:0 0 0 2px var(--ink),0 0 0 6px var(--hot)}
+.bubble.pop{animation:pop .28s forwards}
+.float{position:absolute;font:800 24px/1 var(--display);color:var(--sun);text-shadow:0 2px 0 var(--ink);pointer-events:none;animation:rise .8s forwards}
+.toast{position:absolute;left:50%;top:40%;transform:translate(-50%,-50%);font:800 44px/1 var(--display);color:var(--paper);text-shadow:0 3px 0 var(--ink);pointer-events:none;animation:toast 1.4s forwards;white-space:nowrap}
+.over{position:absolute;inset:0;display:grid;place-items:center;padding:16px;background:color-mix(in srgb,var(--water-deep) 65%,transparent);z-index:5}
+.over .card{display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;max-width:340px}
+.over h2{font-size:38px}
+
+@keyframes bob{50%{transform:translateY(-4px)}}
+@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+@keyframes breathe{50%{transform:scale(1.04)}}
+@keyframes pop-in{from{transform:scale(.8);opacity:0}}
+@keyframes star-in{from{transform:scale(0) rotate(-40deg);opacity:0}}
+@keyframes pop{to{transform:var(--t) scale(1.7);opacity:0}}
+@keyframes rise{to{transform:translateY(-50px);opacity:0}}
+@keyframes toast{0%{opacity:0;transform:translate(-50%,-50%) scale(.6)}15%,70%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-70%) scale(1)}}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+@media (max-width:720px){
+  .menu-top,.ready-body{grid-template-columns:1fr}
+  .stat b{font-size:26px}
+  .bigstars svg{width:58px;height:58px}
+  .bigstars svg:nth-child(2){width:72px;height:72px}
+  .bubble{width:56px;height:56px;font-size:26px}
+}
+</style>
+
+<div class="app">
+  <header class="bar">
+    <div class="brand">
+      <div class="logo" aria-hidden="true"><span>F</span><span>J</span></div>
+      <h1>Home Row Heroes</h1>
+    </div>
+    <div class="bar-right">
+      <div class="star-count" title="Stars earned"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.5l-5.9 3.1 1.2-6.5-4.8-4.6 6.6-.9z"/></svg><span id="starCount">0 / 45</span></div>
+      <button class="toggle" id="soundBtn" aria-pressed="true">Sound on</button>
+      <button class="toggle" id="peekBtn" aria-pressed="false">Hide key letters</button>
+    </div>
+  </header>
+  <p class="touch-note">Home Row Heroes needs a real keyboard. Plug one in or play on a computer.</p>
+
+  <main>
+    <!-- MENU -->
+    <section id="screen-menu" class="screen">
+      <div class="menu-top">
+        <div class="card mission">
+          <p class="eyebrow">Your next mission</p>
+          <h2 id="nextTitle">Lesson 1: Pointer Pals</h2>
+          <p class="muted" id="nextTip"></p>
+          <div class="caps" id="nextCaps"></div>
+          <button class="btn primary" id="continueBtn">Start lesson</button>
+        </div>
+        <div class="card bubble-card">
+          <div class="deco" aria-hidden="true">
+            <i style="width:54px;height:54px;right:18px;top:34px"></i>
+            <i style="width:28px;height:28px;right:70px;top:14px"></i>
+            <i style="width:18px;height:18px;right:12px;top:12px"></i>
+          </div>
+          <p class="eyebrow">Game</p>
+          <h2>Bubble Pop</h2>
+          <p class="muted">Letters float up in bubbles. Type the letter to pop it before it reaches the top!</p>
+          <div class="btn-row">
+            <button class="btn water" id="bubbleHome">Home row</button>
+            <button class="btn water" id="bubbleAll">All my keys</button>
+          </div>
+          <p class="tiny" id="bubbleInfo">Best score: 0</p>
+        </div>
+      </div>
+      <div id="lessonGroups" class="screen"></div>
+      <footer class="grownups">
+        <span>For grown-ups:</span>
+        <button class="link" id="unlockBtn">Unlock all lessons</button>
+        <button class="link" id="resetBtn">Reset progress</button>
+      </footer>
+    </section>
+
+    <!-- READY -->
+    <section id="screen-ready" class="screen" hidden>
+      <div class="head-row">
+        <button class="btn small" data-menu>Back</button>
+        <div>
+          <p class="eyebrow" id="readyEyebrow">Lesson 1</p>
+          <h2 id="readyTitle">Pointer Pals</h2>
+        </div>
+      </div>
+      <div class="ready-body">
+        <div class="card">
+          <ol class="steps">
+            <li>Put your pointer fingers on <span class="cap" style="--fc:var(--f-pointer)">F</span> and <span class="cap" style="--fc:var(--f-pointer)">J</span>. Feel the bumps?</li>
+            <li>Rest your other fingers on <b>A S D</b> and <b>K L ;</b></li>
+            <li>Let your thumbs rest on the space bar.</li>
+            <li class="go">Press F and J at the same time to start!</li>
+          </ol>
+        </div>
+        <div class="card tipcard">
+          <p class="eyebrow" id="readyTipLabel">New keys</p>
+          <div class="caps" id="readyCaps"></div>
+          <p id="readyTip"></p>
+        </div>
+      </div>
+      <div class="press"><span class="cap" style="--fc:var(--f-pointer)">F</span>+<span class="cap" style="--fc:var(--f-pointer)">J</span> to start</div>
+      <div class="kbd-mount"></div>
+      <div class="hands-mount"></div>
+    </section>
+
+    <!-- LESSON -->
+    <section id="screen-lesson" class="screen" hidden>
+      <div class="play-top">
+        <button class="btn small" data-menu>Lessons</button>
+        <div class="play-title">
+          <h2 id="lessonName">Pointer Pals</h2>
+          <div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
+        </div>
+        <div class="live">
+          <span class="pill">Accuracy <b id="liveAcc">100%</b></span>
+          <span class="pill">Streak <b id="liveStreak">0</b></span>
+        </div>
+      </div>
+      <div class="strip" id="strip"><div class="track" id="track"></div></div>
+      <p class="hint" id="hint"></p>
+      <div class="banner" id="banner" hidden></div>
+      <div class="kbd-mount"></div>
+      <div class="hands-mount"></div>
+    </section>
+
+    <!-- RESULTS -->
+    <section id="screen-results" class="screen" hidden>
+      <div class="card results">
+        <div class="bigstars" id="bigStars"></div>
+        <h2 id="resTitle">Superstar typing!</h2>
+        <p class="muted" id="resSub"></p>
+        <div class="stats">
+          <div class="stat"><b id="resAcc">0%</b><span>Accuracy</span></div>
+          <div class="stat"><b id="resWpm">0</b><span>Words per minute</span></div>
+          <div class="stat"><b id="resTime">0s</b><span>Time</span></div>
+        </div>
+        <div class="practice" id="resPractice"></div>
+        <p class="unlocked" id="resUnlocked" hidden></p>
+        <div class="btn-row" style="justify-content:center">
+          <button class="btn" id="resRetry">Try again</button>
+          <button class="btn primary" id="resNext">Next lesson</button>
+          <button class="btn" data-menu>Lessons</button>
+        </div>
+        <p class="tiny">Enter: <span id="resEnterLabel">next lesson</span> · R: try again · Esc: lessons</p>
+      </div>
+    </section>
+
+    <!-- BUBBLE POP -->
+    <section id="screen-bubble" class="screen" hidden>
+      <div class="hud">
+        <button class="btn small" data-menu>Quit</button>
+        <span class="pill">Score <b id="bScore">0</b></span>
+        <span class="pill">Level <b id="bLevel">1</b></span>
+        <span class="pill">Combo <b id="bCombo">x1</b></span>
+        <span class="spacer"></span>
+        <div class="hearts" id="hearts" aria-label="Lives"></div>
+      </div>
+      <div class="pond" id="pond"></div>
+      <div class="kbd-mount"></div>
+    </section>
+  </main>
+</div>
+
+<script>
+(() => {
+const LESSONS = [
+  {keys:'fj', name:'Pointer Pals', row:'home', tip:'Your pointer fingers live on F and J. Feel for the little bumps. That is home!'},
+  {keys:'dk', name:'Middle Buddies', row:'home', tip:'Middle fingers rest on D and K, right next to your pointers.'},
+  {keys:'sl', name:'Ring Team', row:'home', tip:'Ring fingers sit on S and L. Keep your pointers on the bumps.'},
+  {keys:'a;', name:'Pinky Power', row:'home', tip:'Pinkies rest on A and ; (semicolon). Small fingers, big job!'},
+  {keys:'gh', name:'Pointer Reach', row:'home', tip:'Slide a pointer finger over one key to G or H, then hop back home.'},
+  {keys:'ei', name:'Up to E and I', row:'top', tip:'Middle fingers reach up to E and I. Leave your other fingers resting.'},
+  {keys:'ru', name:'R and U', row:'top', tip:'Pointer fingers reach up to R and U, then come back to the bumps.'},
+  {keys:'ty', name:'T and Y Stretch', row:'top', tip:'Pointers stretch up and over to T and Y.'},
+  {keys:'wo', name:'W and O', row:'top', tip:'Ring fingers reach up to W and O.'},
+  {keys:'qp', name:'Pinky Peaks', row:'top', tip:'Pinkies climb up to Q and P.'},
+  {keys:'vn', name:'Down to V and N', row:'bottom', tip:'Pointers dip down to V and N.'},
+  {keys:'cm', name:'C and M', row:'bottom', tip:'Left middle finger drops to C. Right pointer drops to M.'},
+  {keys:'bx', name:'B and X', row:'bottom', tip:'Left pointer stretches down to B. Left ring finger drops to X.'},
+  {keys:'z', name:'Zippy Z', row:'bottom', tip:'Left pinky reaches down to Z. That is the last letter!'},
+  {keys:'', name:'Hero Sentences', row:'all', tip:'Type real sentences with every letter. Eyes on the screen, not your hands.'},
+];
+const ROW_INFO = {
+  home:['Home row','Where your fingers rest'],
+  top:['Top row','Reach up, then come back home'],
+  bottom:['Bottom row','Reach down, then come back home'],
+  all:['Every letter','Put it all together'],
+};
+const WORDS = `a ad add all as ask asks dad dads fad fall falls flask flasks glad glass gas had half hall has lad lads sad salad salads shall flash dash ash ha
+see sea she he her here hide hid his is it if in fish dish wish desk sled seed feed need side ride slide sail tail kid lid did dig fig jig gift lift life file fill hill will still skill jiggle
+red rug run fun sun us use sure rule fur hurt sugar dirt fire tire hire jar far star art are ear dear fear hear
+the they then this that thin tree three try toy tiny tug hat sat rat yet yes yay you your yard year duty eat seat heat treat fruit great tea teeth
+we wet win wind wish word work world wow owl low row show snow slow grow glow so go no do to too two who how now cow hello
+quit quiet quack quiz pup put pie pig pet pat pan pen pop top stop shop ship hop map nap tap paper puppy happy
+van vet very vine five dive give live love oven seven never
+can cut cub cake come came much mice nice race face cone moon man men mom milk camp candy music magic
+big bug bus bed bat bee bear bark box fox six wax mix fix best bird blue book bring brown ball baby
+zoo zip zap buzz fizz zero lazy size prize zebra puzzle pizza
+and at be but by for from good jump kite lake look make many more my not of on one our out over play read said school some story time turn want was water what when where with write about after again animal apple chair class clean color dance day dog door down draw dream drink egg end every family farm fast find first float flower fly friend frog game garden girl boy green hand help hold home horse house jelly kind king lamp late laugh leaf learn lemon light lion little long lunch name nest night ocean open orange paint panda park party pencil pink plant pond rain rainbow robot rock rocket room round sing sister brother sky sleep small smile snack soft space spin spring stone storm sweet swim table teacher think tiger train truck turtle under up wagon walk warm whale wheel white window winter wolf yellow yummy`.split(/\s+/).filter(Boolean);
+const SENTENCES = [
+  'the quick brown fox jumps over the lazy dog',
+  'my cat likes to nap in the warm sun',
+  'we can fly a kite at the park',
+  'a big frog sat on a log in the pond',
+  'i love to read a good book at night',
+  'the puppy ran fast to get the red ball',
+  'my friend and i built a tall snow fort',
+  'five zebras drink water at the river',
+  'the rocket zoomed past the moon and stars',
+  'please pass me a slice of pizza',
+  'a whale can sing a very long song',
+  'jump in the puddle with your new boots',
+  'the queen gave the brave knight a prize',
+  'we planted seeds and watched them grow',
+  'six little ducks went out to play',
+];
+const ROWS = [
+  ['q','w','e','r','t','y','u','i','o','p'],
+  ['a','s','d','f','g','h','j','k','l',';'],
+  ['z','x','c','v','b','n','m',',','.','/'],
+];
+const FMAP = {qaz:'L5', wsx:'L4', edc:'L3', rfvtgb:'L2', yhnujm:'R2', 'ik,':'R3', 'ol.':'R4', 'p;/':'R5', ' ':'T'};
+const KEY_FINGER = {};
+for (const [ks, f] of Object.entries(FMAP)) for (const c of ks) KEY_FINGER[c] = f;
+const FINGER_INFO = {
+  L5:['left pinky','pinky'], L4:['left ring finger','ring'], L3:['left middle finger','middle'], L2:['left pointer finger','pointer'],
+  T:['thumb','thumb'],
+  R2:['right pointer finger','pointer'], R3:['right middle finger','middle'], R4:['right ring finger','ring'], R5:['right pinky','pinky'],
+};
+const fColor = f => `var(--f-${FINGER_INFO[f][1]})`;
+const POS = {};
+ROWS.forEach((r, ri) => r.forEach((k, ci) => POS[k] = {r:ri, c:ci}));
+const TAUGHT = new Set('abcdefghijklmnopqrstuvwxyz; '.split(''));
+const STAR_PATH = 'M12 2.6l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.5l-5.9 3.1 1.2-6.5-4.8-4.6 6.6-.9z';
+const starSvg = on => `<svg viewBox="0 0 24 24" aria-hidden="true"><path class="star${on ? ' on' : ''}" d="${STAR_PATH}"/></svg>`;
+const capHtml = k => `<span class="cap" style="--fc:${fColor(KEY_FINGER[k] || 'T')}">${k === ' ' ? 'space' : k.toUpperCase()}</span>`;
+
+const $ = s => document.querySelector(s);
+const rand = a => a[Math.floor(Math.random() * a.length)];
+
+/* ---------- storage ---------- */
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
+};
+const progress = Object.assign({stars:{}, unlockAll:false, bubbleBest:0}, store.get('hrh-progress', {}));
+const settings = Object.assign({sound:true, noPeek:false}, store.get('hrh-settings', {}));
+const saveProgress = () => store.set('hrh-progress', progress);
+const saveSettings = () => store.set('hrh-settings', settings);
+const starsFor = i => progress.stars[i] || 0;
+const isUnlocked = i => i === 0 || progress.unlockAll || starsFor(i - 1) >= 1;
+
+/* ---------- sound ---------- */
+let actx = null;
+function tone(f1, f2, dur, type = 'sine', vol = .12, delay = 0) {
+  if (!settings.sound) return;
+  try {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    const t = actx.currentTime + delay, o = actx.createOscillator(), g = actx.createGain();
+    o.type = type;
+    o.frequency.setValueAtTime(f1, t);
+    o.frequency.exponentialRampToValueAtTime(f2, t + dur);
+    g.gain.setValueAtTime(vol, t);
+    g.gain.exponentialRampToValueAtTime(.001, t + dur);
+    o.connect(g).connect(actx.destination);
+    o.start(t); o.stop(t + dur + .02);
+  } catch {}
+}
+const sfx = {
+  good: () => tone(620, 880, .07, 'sine', .08),
+  bad: () => tone(200, 140, .14, 'triangle', .12),
+  pop: () => tone(500, 1200, .09, 'sine', .12),
+  lose: () => tone(300, 90, .35, 'sawtooth', .06),
+  win: n => [523, 659, 784, 1047].slice(0, n + 1).forEach((f, i) => tone(f, f, .18, 'triangle', .1, i * .12)),
+};
+
+/* ---------- keyboard ---------- */
+const keyEls = {};
+const kbd = document.createElement('div');
+kbd.className = 'kbd-wrap';
+kbd.innerHTML = '<div class="kbd" aria-hidden="true"></div>';
+ROWS.concat([[' ']]).forEach((row, ri) => {
+  const r = document.createElement('div');
+  r.className = 'krow r' + ri;
+  row.forEach(k => {
+    const el = document.createElement('div');
+    el.className = 'key' + (k === ' ' ? ' space' : '') + (TAUGHT.has(k) ? '' : ' dim') + (k === 'f' || k === 'j' ? ' bump' : '');
+    el.style.setProperty('--fc', fColor(KEY_FINGER[k]));
+    el.innerHTML = `<span>${k === ' ' ? 'space' : k.toUpperCase()}</span>`;
+    keyEls[k] = el;
+    r.append(el);
+  });
+  kbd.firstChild.append(r);
+});
+function flashKey(k, good) {
+  const el = keyEls[k];
+  if (!el) return;
+  el.classList.remove('hit', 'miss');
+  void el.offsetWidth;
+  el.classList.add(good ? 'hit' : 'miss');
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('hit', 'miss'), good ? 120 : 320);
+}
+
+/* ---------- hands ---------- */
+const W = 440;
+const LEFT = [
+  {f:'L5', x:30, y:66, w:28, h:90, label:'A'},
+  {f:'L4', x:62, y:40, w:30, h:110, label:'S'},
+  {f:'L3', x:96, y:28, w:30, h:120, label:'D'},
+  {f:'L2', x:130, y:42, w:30, h:106, label:'F'},
+];
+function handSvg() {
+  let s = '';
+  const side = (mirror) => {
+    const mx = (x, w) => mirror ? W - x - w : x;
+    let g = '';
+    LEFT.forEach(d => {
+      const f = mirror ? 'R' + d.f[1] : d.f;
+      const label = mirror ? {A:';', S:'L', D:'K', F:'J'}[d.label] : d.label;
+      const x = mx(d.x, d.w);
+      g += `<g class="digit" data-f="${f}"><rect x="${x}" y="${d.y}" width="${d.w}" height="${d.h}" rx="${d.w / 2}" fill="${fColor(f)}"/><text x="${x + d.w / 2}" y="${d.y + 20}">${label}</text></g>`;
+    });
+    const tx = mx(160, 28), cx = tx + 14, ang = mirror ? -42 : 42;
+    g += `<g class="digit" data-f="T"><rect x="${tx}" y="118" width="28" height="78" rx="14" fill="${fColor('T')}" transform="rotate(${ang} ${cx} 160)"/></g>`;
+    g += `<rect class="palm" x="${mx(26, 140)}" y="104" width="140" height="96" rx="38"/>`;
+    return g;
+  };
+  s += side(false) + side(true);
+  return `<svg class="hands" viewBox="0 0 ${W} 214" aria-hidden="true">${s}</svg>`;
+}
+const handsHolder = document.createElement('div');
+handsHolder.innerHTML = handSvg();
+const hands = handsHolder.firstChild;
+
+function setTargets(keys) {
+  Object.values(keyEls).forEach(el => el.classList.remove('target'));
+  hands.querySelectorAll('.digit').forEach(d => d.classList.remove('on'));
+  const fingers = new Set();
+  keys.forEach(k => {
+    if (keyEls[k]) keyEls[k].classList.add('target');
+    if (KEY_FINGER[k]) fingers.add(KEY_FINGER[k]);
+  });
+  fingers.forEach(f => hands.querySelectorAll(`[data-f="${f}"]`).forEach(d => d.classList.add('on')));
+  hands.classList.toggle('focus', fingers.size > 0);
+}
+
+/* ---------- screens ---------- */
+let mode = 'menu';
+const screens = [...document.querySelectorAll('main > .screen')];
+function show(name) {
+  mode = name;
+  screens.forEach(s => s.hidden = s.id !== 'screen-' + name);
+  const scr = $('#screen-' + name);
+  const km = scr.querySelector('.kbd-mount'), hm = scr.querySelector('.hands-mount');
+  if (km) km.append(kbd);
+  if (hm) hm.append(hands);
+  if (document.activeElement && document.activeElement !== document.body) document.activeElement.blur();
+  if (name !== 'bubble') stopBubble();
+  if (name === 'menu') renderMenu();
+  window.scrollTo(0, 0);
+}
+document.querySelectorAll('[data-menu]').forEach(b => b.addEventListener('click', () => show('menu')));
+
+/* ---------- menu ---------- */
+function nextLesson() {
+  for (let i = 0; i < LESSONS.length; i++) if (isUnlocked(i) && starsFor(i) === 0) return i;
+  let last = 0;
+  for (let i = 0; i < LESSONS.length; i++) if (isUnlocked(i)) last = i;
+  return last;
+}
+function lessonCaps(L) {
+  return L.keys ? [...L.keys].map(capHtml).join('') : '<span class="cap">A</span><span class="cap">to</span><span class="cap">Z</span>';
+}
+function learnedKeys() {
+  const s = new Set();
+  LESSONS.forEach((L, i) => { if (progress.unlockAll || starsFor(i) >= 1) for (const c of L.keys) s.add(c); });
+  return s;
+}
+function renderMenu() {
+  const total = LESSONS.reduce((n, _, i) => n + starsFor(i), 0);
+  $('#starCount').textContent = `${total} / ${LESSONS.length * 3}`;
+  const n = nextLesson(), L = LESSONS[n];
+  $('#nextTitle').textContent = `Lesson ${n + 1}: ${L.name}`;
+  $('#nextTip').textContent = L.tip;
+  $('#nextCaps').innerHTML = lessonCaps(L);
+  $('#continueBtn').textContent = starsFor(n) ? 'Play again' : 'Start lesson';
+  $('#continueBtn').onclick = () => goReady('lesson', n);
+
+  const g = $('#lessonGroups');
+  g.innerHTML = '';
+  Object.entries(ROW_INFO).forEach(([row, [title, sub]]) => {
+    const sec = document.createElement('div');
+    sec.className = 'group';
+    sec.innerHTML = `<div class="group-head"><h3>${title}</h3><span class="muted">${sub}</span></div><div class="lessons"></div>`;
+    const grid = sec.querySelector('.lessons');
+    LESSONS.forEach((L, i) => {
+      if (L.row !== row) return;
+      const open = isUnlocked(i);
+      const b = document.createElement('button');
+      b.className = 'lesson' + (open ? '' : ' locked') + (open && i === n ? ' next' : '');
+      b.innerHTML = `<span class="num">Lesson ${i + 1}</span><span class="name">${L.name}</span><span class="caps">${lessonCaps(L)}</span>` +
+        (open ? `<span class="ministars" aria-label="${starsFor(i)} of 3 stars">${[0, 1, 2].map(s => starSvg(s < starsFor(i))).join('')}</span>`
+              : `<span class="lock">Get a star on lesson ${i} to open</span>`);
+      if (open) b.onclick = () => goReady('lesson', i);
+      else b.setAttribute('aria-disabled', 'true');
+      grid.append(b);
+    });
+    g.append(sec);
+  });
+
+  const learned = learnedKeys();
+  const extra = [...learned].some(k => !'asdfghjkl;'.includes(k));
+  $('#bubbleAll').disabled = !extra;
+  $('#bubbleInfo').textContent = `Best score: ${progress.bubbleBest}` + (extra ? '' : '. Finish lesson 6 to pop letters beyond home row.');
+  $('#unlockBtn').textContent = progress.unlockAll ? 'Lock lessons again' : 'Unlock all lessons';
+}
+$('#bubbleHome').onclick = () => goReady('bubble', [...'asdfghjkl;']);
+$('#bubbleAll').onclick = () => goReady('bubble', [...learnedKeys()]);
+$('#unlockBtn').onclick = () => { progress.unlockAll = !progress.unlockAll; saveProgress(); renderMenu(); };
+let resetArmed = 0;
+$('#resetBtn').onclick = () => {
+  const b = $('#resetBtn');
+  if (Date.now() - resetArmed < 4000) {
+    progress.stars = {}; progress.bubbleBest = 0; progress.unlockAll = false;
+    saveProgress(); resetArmed = 0; b.textContent = 'Reset progress'; renderMenu();
+  } else {
+    resetArmed = Date.now();
+    b.textContent = 'Click again to erase all stars';
+    setTimeout(() => { if (Date.now() - resetArmed >= 3900) b.textContent = 'Reset progress'; }, 4000);
+  }
+};
+
+/* ---------- settings ---------- */
+function applySettings() {
+  $('#soundBtn').setAttribute('aria-pressed', settings.sound);
+  $('#soundBtn').textContent = settings.sound ? 'Sound on' : 'Sound off';
+  $('#peekBtn').setAttribute('aria-pressed', settings.noPeek);
+  document.body.classList.toggle('no-peek', settings.noPeek);
+}
+$('#soundBtn').onclick = e => { settings.sound = !settings.sound; saveSettings(); applySettings(); e.currentTarget.blur(); };
+$('#peekBtn').onclick = e => { settings.noPeek = !settings.noPeek; saveSettings(); applySettings(); e.currentTarget.blur(); };
+
+/* ---------- ready (home position check) ---------- */
+let readyAction = null;
+function goReady(kind, arg) {
+  if (kind === 'lesson') {
+    const L = LESSONS[arg];
+    $('#readyEyebrow').textContent = `Lesson ${arg + 1}`;
+    $('#readyTitle').textContent = L.name;
+    $('#readyTipLabel').textContent = L.keys ? 'New keys' : 'Every letter';
+    $('#readyCaps').innerHTML = lessonCaps(L);
+    $('#readyTip').textContent = L.tip;
+    readyAction = () => startLesson(arg);
+  } else {
+    $('#readyEyebrow').textContent = 'Bubble Pop';
+    $('#readyTitle').textContent = 'Fingers home, then pop!';
+    $('#readyTipLabel').textContent = 'Letters in this game';
+    $('#readyCaps').innerHTML = arg.map(capHtml).join('');
+    $('#readyTip').textContent = 'Pop the bubble closest to the top first. The ring color shows which finger to use.';
+    readyAction = () => startBubble(arg);
+  }
+  show('ready');
+  setTargets(['f', 'j']);
+}
+
+/* ---------- lesson ---------- */
+let run = null;
+function allowedThrough(i) {
+  const s = new Set();
+  for (let j = 0; j <= i; j++) for (const c of LESSONS[j].keys) s.add(c);
+  return s;
+}
+function genText(i) {
+  const L = LESSONS[i];
+  if (!L.keys) return [...SENTENCES].sort(() => Math.random() - .5).slice(0, 2).join(' ');
+  const allowed = allowedThrough(i), fresh = [...L.keys], al = [...allowed];
+  const pool = WORDS.filter(w => [...w].every(c => allowed.has(c)));
+  const freshPool = pool.filter(w => fresh.some(c => w.includes(c)));
+  const target = i < 5 ? 52 : 72;
+  const drillOdds = freshPool.length >= 6 ? .2 : freshPool.length >= 2 ? .5 : 1;
+  const chunks = [fresh.map(c => c.repeat(3)).join(' ')];
+  let len = chunks[0].length;
+  while (len < target) {
+    let w = '';
+    if (Math.random() < drillOdds) {
+      const n = 2 + Math.floor(Math.random() * 3);
+      for (let k = 0; k < n; k++) w += Math.random() < .55 ? rand(fresh) : rand(al);
+    } else {
+      w = Math.random() < .65 ? rand(freshPool) : rand(pool);
+    }
+    if (w === chunks[chunks.length - 1]) continue;
+    chunks.push(w);
+    len += w.length + 1;
+  }
+  return chunks.join(' ');
+}
+function startLesson(i) {
+  const text = genText(i);
+  run = {i, text, pos:0, wrong:0, missed:new Set(), misses:{}, start:0, slide:0, streak:0, spans:[]};
+  $('#lessonName').textContent = `Lesson ${i + 1}: ${LESSONS[i].name}`;
+  const track = $('#track');
+  track.innerHTML = '';
+  run.spans = [...text].map(c => {
+    const s = document.createElement('span');
+    s.className = 'ch' + (c === ' ' ? ' sp' : '');
+    s.textContent = c === ' ' ? ' ' : c;
+    track.append(s);
+    return s;
+  });
+  $('#banner').hidden = true;
+  show('lesson');
+  updateLesson();
+}
+function centerStrip() {
+  if (!run || mode !== 'lesson') return;
+  const cur = run.spans[Math.min(run.pos, run.spans.length - 1)];
+  const off = cur.offsetLeft + cur.offsetWidth / 2;
+  $('#track').style.transform = `translateX(${$('#strip').clientWidth * .38 - off}px)`;
+}
+function updateLesson() {
+  const {spans, pos, text} = run;
+  spans.forEach((s, i) => {
+    s.classList.toggle('done', i < pos);
+    s.classList.toggle('cur', i === pos);
+    s.classList.toggle('missed', run.missed.has(i));
+  });
+  centerStrip();
+  $('#progressBar').style.width = (pos / text.length * 100) + '%';
+  const acc = Math.round(text.length && pos ? pos / (pos + run.wrong) * 100 : 100);
+  $('#liveAcc').textContent = acc + '%';
+  $('#liveStreak').textContent = run.streak;
+  const next = text[pos];
+  if (next === undefined) { setTargets([]); return; }
+  setTargets([next]);
+  const f = KEY_FINGER[next];
+  $('#hint').innerHTML = next === ' '
+    ? `Tap the <span class="chip" style="--fc:${fColor('T')}">space bar</span> with your thumb`
+    : `Use your <span class="chip" style="--fc:${fColor(f)}">${FINGER_INFO[f][0]}</span>`;
+}
+let bannerT;
+function banner(msg) {
+  const b = $('#banner');
+  b.textContent = msg;
+  b.hidden = false;
+  clearTimeout(bannerT);
+  bannerT = setTimeout(() => b.hidden = true, 3800);
+}
+function lessonKey(e, k) {
+  if (k === 'Escape') return show('menu');
+  if (k.length !== 1) return;
+  e.preventDefault();
+  if (e.repeat) return;
+  const expected = run.text[run.pos];
+  if (!run.start) run.start = performance.now();
+  if (k === expected) {
+    flashKey(k, true);
+    sfx.good();
+    run.pos++;
+    run.streak++;
+    run.slide = 0;
+    if (run.streak > 0 && run.streak % 25 === 0) banner(`${run.streak} in a row! Keep it up!`);
+    if (run.pos >= run.text.length) return finishLesson();
+    updateLesson();
+  } else {
+    flashKey(k, false);
+    sfx.bad();
+    run.wrong++;
+    run.streak = 0;
+    run.missed.add(run.pos);
+    run.misses[expected] = (run.misses[expected] || 0) + 1;
+    const a = POS[expected], b = POS[k];
+    run.slide = (a && b && a.r === b.r && Math.abs(a.c - b.c) === 1) ? run.slide + 1 : 0;
+    if (run.slide >= 2) { banner('Uh oh, your hands slid over! Find the bumps on F and J, then keep going.'); run.slide = 0; }
+    const cur = run.spans[run.pos];
+    cur.classList.remove('wrong'); void cur.offsetWidth; cur.classList.add('wrong');
+    updateLesson();
+  }
+}
+
+/* ---------- results ---------- */
+let resultsAt = 0, lastResult = null;
+function finishLesson() {
+  const {i, text, wrong} = run;
+  const secs = Math.max(1, (performance.now() - run.start) / 1000);
+  const acc = text.length / (text.length + wrong);
+  const wpm = Math.round((text.length / 5) / (secs / 60));
+  const stars = acc >= .95 ? 3 : acc >= .85 ? 2 : acc >= .7 ? 1 : 0;
+  const wasLocked = i + 1 < LESSONS.length && !isUnlocked(i + 1);
+  if (stars > starsFor(i)) { progress.stars[i] = stars; saveProgress(); }
+  const nowUnlocked = wasLocked && isUnlocked(i + 1);
+  lastResult = {i, stars};
+
+  $('#bigStars').innerHTML = [0, 1, 2].map(s => starSvg(s < stars)).join('');
+  [...$('#bigStars').querySelectorAll('.star.on')].forEach((p, n) => p.style.animationDelay = (n * .18 + .1) + 's');
+  const msgs = [
+    ['So close!', 'Go slow and steady and try again. Accuracy matters more than speed.'],
+    ['You passed!', 'Practice makes perfect. Can you get two stars?'],
+    ['Great job!', 'Almost perfect. Try for three stars!'],
+    ['Superstar typing!', settings.noPeek ? 'Three stars without peeking at the letters. Amazing!' : 'Three stars! Next time, try turning on "Hide key letters".'],
+  ];
+  $('#resTitle').textContent = msgs[stars][0];
+  $('#resSub').textContent = msgs[stars][1];
+  $('#resAcc').textContent = Math.round(acc * 100) + '%';
+  $('#resWpm').textContent = wpm;
+  $('#resTime').textContent = secs < 60 ? Math.round(secs) + 's' : `${Math.floor(secs / 60)}m ${Math.round(secs % 60)}s`;
+  const top = Object.entries(run.misses).sort((a, b) => b[1] - a[1]).slice(0, 4);
+  $('#resPractice').innerHTML = top.length
+    ? `<span class="muted">Keys to practice:</span>` + top.map(([k]) => capHtml(k)).join('')
+    : `<span class="muted">No mistakes at all!</span>`;
+  const ru = $('#resUnlocked');
+  ru.hidden = !nowUnlocked;
+  if (nowUnlocked) ru.textContent = `Lesson ${i + 2} unlocked!`;
+  const canNext = i + 1 < LESSONS.length && isUnlocked(i + 1);
+  $('#resNext').hidden = !canNext;
+  $('#resEnterLabel').textContent = canNext && stars > 0 ? 'next lesson' : 'try again';
+  resultsAt = performance.now();
+  setTargets([]);
+  show('results');
+  setTimeout(() => sfx.win(stars), 150);
+}
+$('#resRetry').onclick = () => goReady('lesson', lastResult.i);
+$('#resNext').onclick = () => goReady('lesson', lastResult.i + 1);
+function resultsKey(e, k) {
+  if (performance.now() - resultsAt < 700) return;
+  if (k === 'Escape') return show('menu');
+  if (k === 'r') return goReady('lesson', lastResult.i);
+  if (k === 'Enter') {
+    e.preventDefault();
+    const {i, stars} = lastResult;
+    goReady('lesson', stars > 0 && i + 1 < LESSONS.length && isUnlocked(i + 1) ? i + 1 : i);
+  }
+}
+
+/* ---------- bubble pop ---------- */
+let game = null, raf = 0;
+const pond = $('#pond');
+function heartsHtml(lives) {
+  const p = 'M12 20.5s-7.5-4.6-9.3-9.2C1.4 8 3.4 4.5 6.9 4.5c2.1 0 3.6 1.2 5.1 3 1.5-1.8 3-3 5.1-3 3.5 0 5.5 3.5 4.2 6.8-1.8 4.6-9.3 9.2-9.3 9.2z';
+  return [0, 1, 2].map(i => `<svg viewBox="0 0 24 24" class="${i < lives ? '' : 'lost'}"><path d="${p}"/></svg>`).join('');
+}
+function startBubble(set) {
+  stopBubble();
+  pond.innerHTML = '';
+  game = {set, score:0, lives:3, level:1, pops:0, combo:0, speed:34, interval:2, spawnT:.4, bubbles:[], last:0, over:false};
+  show('bubble');
+  hudUpdate();
+  raf = requestAnimationFrame(loop);
+}
+function stopBubble() { cancelAnimationFrame(raf); raf = 0; }
+function hudUpdate() {
+  $('#bScore').textContent = game.score;
+  $('#bLevel').textContent = game.level;
+  $('#bCombo').textContent = 'x' + (1 + Math.floor(game.combo / 5));
+  $('#hearts').innerHTML = heartsHtml(game.lives);
+}
+function spawn() {
+  if (game.bubbles.length >= 7) return;
+  const onScreen = new Set(game.bubbles.map(b => b.ch));
+  const choices = game.set.filter(c => !onScreen.has(c));
+  const ch = rand(choices.length ? choices : game.set);
+  const el = document.createElement('div');
+  el.className = 'bubble';
+  el.textContent = ch.toUpperCase();
+  el.style.setProperty('--fc', fColor(KEY_FINGER[ch]));
+  pond.append(el);
+  const size = el.offsetWidth || 66;
+  const x = 8 + Math.random() * Math.max(10, pond.clientWidth - size - 16);
+  game.bubbles.push({el, ch, x, y:0, size, sp:.85 + Math.random() * .3, wob:Math.random() * 6});
+}
+function floatText(txt, x, y) {
+  const f = document.createElement('div');
+  f.className = 'float';
+  f.textContent = txt;
+  f.style.left = x + 'px';
+  f.style.bottom = y + 'px';
+  pond.append(f);
+  setTimeout(() => f.remove(), 800);
+}
+function toast(txt) {
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = txt;
+  pond.append(t);
+  setTimeout(() => t.remove(), 1400);
+}
+function loop(t) {
+  if (!game || game.over) return;
+  const dt = game.last ? Math.min(.05, (t - game.last) / 1000) : 0;
+  game.last = t;
+  game.spawnT -= dt;
+  if (game.spawnT <= 0) { spawn(); game.spawnT = game.interval * (.8 + Math.random() * .4); }
+  const H = pond.clientHeight;
+  let top = null;
+  for (const b of [...game.bubbles]) {
+    b.y += game.speed * b.sp * dt;
+    b.wob += dt;
+    const x = b.x + Math.sin(b.wob * 2) * 6;
+    b.el.style.setProperty('--t', `translate(${x}px, ${-b.y}px)`);
+    if (b.y > H + 6) {
+      game.bubbles.splice(game.bubbles.indexOf(b), 1);
+      b.el.remove();
+      game.lives--;
+      game.combo = 0;
+      sfx.lose();
+      pond.classList.remove('shake'); void pond.offsetWidth; pond.classList.add('shake');
+      hudUpdate();
+      if (game.lives <= 0) return gameOver();
+    } else if (!top || b.y > top.y) top = b;
+  }
+  game.bubbles.forEach(b => b.el.classList.toggle('near', b === top));
+  const want = top ? [top.ch] : [];
+  if (want.join() !== (game.want || []).join()) { game.want = want; setTargets(want); }
+  raf = requestAnimationFrame(loop);
+}
+function bubbleKey(e, k) {
+  if (k === 'Escape') return show('menu');
+  if (!game) return;
+  if (game.over) {
+    if (k === 'Enter' && performance.now() - game.overAt > 700) { e.preventDefault(); startBubble(game.set); }
+    return;
+  }
+  if (k.length !== 1) return;
+  e.preventDefault();
+  if (e.repeat) return;
+  const hits = game.bubbles.filter(b => b.ch === k).sort((a, b) => b.y - a.y);
+  if (!hits.length) {
+    flashKey(k, false);
+    sfx.bad();
+    game.combo = 0;
+    hudUpdate();
+    return;
+  }
+  const b = hits[0];
+  flashKey(k, true);
+  sfx.pop();
+  game.bubbles.splice(game.bubbles.indexOf(b), 1);
+  b.el.classList.add('pop');
+  setTimeout(() => b.el.remove(), 300);
+  game.combo++;
+  const pts = 10 * (1 + Math.floor((game.combo - 1) / 5));
+  game.score += pts;
+  game.pops++;
+  floatText('+' + pts, b.x + 10, b.y + b.size);
+  if (game.pops % 8 === 0) {
+    game.level++;
+    game.speed *= 1.12;
+    game.interval = Math.max(.6, game.interval * .9);
+    toast('Level ' + game.level + '!');
+  }
+  hudUpdate();
+}
+function gameOver() {
+  game.over = true;
+  game.overAt = performance.now();
+  setTargets([]);
+  const best = game.score > progress.bubbleBest;
+  if (best) { progress.bubbleBest = game.score; saveProgress(); }
+  const o = document.createElement('div');
+  o.className = 'over';
+  o.innerHTML = `<div class="card"><h2>Game over</h2><p>You popped <b>${game.pops}</b> bubbles and scored <b>${game.score}</b> points.</p>
+    <p class="${best ? 'unlocked' : 'muted'}">${best ? 'New best score!' : 'Best score: ' + progress.bubbleBest}</p>
+    <div class="btn-row" style="justify-content:center"><button class="btn primary" id="again">Play again</button><button class="btn" id="toMenu">Lessons</button></div>
+    <p class="tiny">Enter: play again · Esc: lessons</p></div>`;
+  pond.append(o);
+  o.querySelector('#again').onclick = () => startBubble(game.set);
+  o.querySelector('#toMenu').onclick = () => show('menu');
+  sfx.win(best ? 3 : 1);
+}
+
+/* ---------- input ---------- */
+const down = new Set();
+const norm = e => (e.key === ' ' || e.key === 'Spacebar') ? ' ' : (e.key.length === 1 ? e.key.toLowerCase() : e.key);
+addEventListener('keyup', e => down.delete(norm(e)));
+addEventListener('blur', () => down.clear());
+addEventListener('keydown', e => {
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  const k = norm(e);
+  down.add(k);
+  if (mode === 'ready') {
+    if (k === 'Escape') return show('menu');
+    if (k.length === 1) e.preventDefault();
+    if (down.has('f') && down.has('j') && readyAction) { sfx.win(2); const a = readyAction; readyAction = null; a(); }
+    return;
+  }
+  if (mode === 'lesson') return lessonKey(e, k);
+  if (mode === 'bubble') return bubbleKey(e, k);
+  if (mode === 'results') return resultsKey(e, k);
+});
+addEventListener('resize', centerStrip);
+
+applySettings();
+show('menu');
+})();
+</script>
